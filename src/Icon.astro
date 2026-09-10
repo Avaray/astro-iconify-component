@@ -1,0 +1,79 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { resolveIcon } from '../dist/core/resolve.mjs';
+
+/**
+ * An offline `<Icon />` component for Astro that provides access to the entire set of Iconify icons
+ * without fetching anything from the network or sending JavaScript to the browser.
+ *
+ * It renders exclusively on the server side (SSG/SSR).
+ *
+ * @example
+ * ```astro
+ * <Icon name="mdi:home" />
+ * <Icon name="mdi:alert" class="w-6 h-6 text-red-500" title="Warning" />
+ * ```
+ */
+export interface Props extends HTMLAttributes<'svg'> {
+  /**
+   * Icon name in the format `"prefix:name"`.
+   *
+   * An invalid name (typo, unknown prefix, non-existent icon)
+   * throws a readable error at build time, instead of silently
+   * rendering nothing.
+   *
+   * @see https://icon-sets.iconify.design (Official Iconify directory)
+   * @see https://icones.js.org/ (Icônes - alternative icon explorer)
+   *
+   * @example "famicons:home"
+   * @example "game-icons:balloon-dog"
+   */
+  name: string;
+
+  /**
+   * CSS classes (e.g., Tailwind: `"w-6 h-6 text-blue-500"`). Passed 1:1
+   * to `<svg>` — the package doesn't add its own classes, so Tailwind doesn't
+   * have to scan `node_modules` for it to work.
+   *
+   * Always overrides the default size (`size`/`1em`), because this is
+   * set as an attribute, not as a `style`.
+   */
+  class?: string;
+
+  /**
+   * Convenient shortcut setting both `width` and `height` at the same time.
+   * Overridable by separate `width`/`height` below, and both —
+   * by CSS (e.g., `class="w-6 h-6"` or `class="size-5"`).
+   *
+   * @default "1em"
+   */
+  size?: string | number;
+
+  /** Overrides `size` for width only. */
+  width?: string | number;
+
+  /** Overrides `size` for height only. */
+  height?: string | number;
+
+  /**
+   * If provided: the icon gets `role="img"` and `aria-label={title}` —
+   * meaning it becomes a semantic/informational icon for screen readers.
+   *
+   * If not provided: the icon gets `aria-hidden="true"` — by default
+   * it is treated as purely decorative (the most common case,
+   * e.g., an icon next to text that already describes its meaning).
+   */
+  title?: string;
+}
+
+const { name, class: className, size, width, height, title, ...rest } = Astro.props;
+
+const resolved = resolveIcon(name, {
+  width: width ?? size,
+  height: height ?? size,
+});
+
+const a11yAttrs = title ? { role: 'img' as const, 'aria-label': title } : { 'aria-hidden': 'true' as const };
+---
+
+<svg {...resolved.attributes as any} class={className} {...a11yAttrs} {...rest} set:html={resolved.body} />

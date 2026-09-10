@@ -1,0 +1,23 @@
+version: 2
+updates:
+  # Monitor npm dependencies (package.json)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    # Group all non-major updates into a single PR to reduce noise
+    groups:
+      non-major:
+        update-types:
+          - "minor"
+          - "patch"
+    # Always create individual PRs for major version bumps
+    # so you can review breaking changes carefully
+    open-pull-requests-limit: 5
+
+  # Monitor GitHub Actions versions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
