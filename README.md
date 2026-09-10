@@ -73,10 +73,50 @@ The component adds **no** own classes - the entire `class` you provide is passed
 <Icon name="mdi:star" class="size-5 text-yellow-500" />
 ```
 
-## 🏝️ Usage with components from other frameworks (React/Vue/Svelte "islands")
+## 🏝️ Usage in UI Frameworks (React, Vue, Svelte) and MDX
 
-`.astro` files cannot be imported inside `.tsx`/`.vue`/`.svelte` - this is a limitation of Astro itself. For a **static** icon (the most common case - an icon next to a button, in a card, in navigation), use a slot: Astro renders `<Icon />` on the server side, and the framework receives ready-made, static HTML as a prop, without any hydration:
+In addition to `.astro` components, this package provides native components for React, Vue, and Svelte. They are perfect for use in **MDX (`.mdx`) files** or **server-rendered (static) islands**, where you cannot directly use `.astro` components.
 
+### ⚛️ React & MDX
+```tsx
+import Icon from 'astro-iconify-component/react';
+
+export default function MyBlock() {
+  return <Icon name="mdi:home" className="w-6 h-6" />;
+}
+```
+
+### 💚 Vue
+```vue
+<template>
+  <Icon name="mdi:home" class="w-6 h-6" />
+</template>
+
+<script setup>
+import Icon from 'astro-iconify-component/vue';
+</script>
+```
+
+### 🧡 Svelte
+```svelte
+<script>
+  import Icon from 'astro-iconify-component/svelte';
+</script>
+
+<Icon name="mdi:home" class="w-6 h-6" />
+```
+
+> **Note:** The `icon` prop is also supported as an alias for `name` across all framework components for backward compatibility with other packages (e.g. `<Icon icon="mdi:home" />`).
+
+### ⚠️ Important: Interactive Client Islands (`client:load`)
+
+The React, Vue, and Svelte components provided by this package **rely on `node:fs`** to read icons directly from the file system. Therefore, they **cannot be shipped to the browser**.
+
+If you need an icon inside an interactive component that hydrates on the client (`client:load`, `client:visible`), you cannot import `astro-iconify-component/react` inside it (Vite will throw an error trying to bundle `node:fs` for the browser). 
+
+Instead, you have two options for interactive islands:
+
+**Option 1: Pass the Astro component as a slot (Recommended for static icons)**
 ```astro
 ---
 import Icon from 'astro-iconify-component';
@@ -88,19 +128,8 @@ import Card from '../islands/Card.tsx';
 </Card>
 ```
 
-```tsx
-// Card.tsx
-export default function Card({ icon, children }) {
-  return (
-    <div className="card">
-      <div className="card-icon">{icon}</div>
-      {children}
-    </div>
-  );
-}
-```
-
-If you need an icon that **changes on the client side** (e.g., play/pause on click), render both variants upfront on the server side using `astro-iconify-component/render` and toggle them in the component - without sending icon data to the browser:
+**Option 2: Pass pre-rendered HTML (For dynamic icons)**
+If the icon needs to change state on the client (e.g., play/pause), render both variants upfront on the server side using the `render` export, and toggle the raw HTML string:
 
 ```astro
 ---
@@ -112,18 +141,6 @@ const pauseIcon = renderIconMarkup('mdi:pause');
 ---
 
 <PlayButton client:load playIconHtml={playIcon} pauseIconHtml={pauseIcon} />
-```
-
-```tsx
-// PlayButton.tsx
-export default function PlayButton({ playIconHtml, pauseIconHtml }) {
-  const [playing, setPlaying] = useState(false);
-  return (
-    <button onClick={() => setPlaying((p) => !p)}>
-      <span dangerouslySetInnerHTML={{ __html: playing ? pauseIconHtml : playIconHtml }} />
-    </button>
-  );
-}
 ```
 
 ## 📜 Icon Licenses
