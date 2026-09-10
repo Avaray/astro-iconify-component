@@ -136,6 +136,12 @@ export interface ResolvedIcon {
  * in the icon name at build time, rather than only by eye on the rendered page.
  */
 export function resolveIcon(name: string, options: ResolveIconOptions = {}): ResolvedIcon {
+  if (!name || typeof name !== 'string') {
+    throw new Error(
+      `${PACKAGE_TAG} The "name" prop is required but received ${JSON.stringify(name)}. Did you pass an undefined variable? Expected format: "prefix:icon-name", e.g., "mdi:home".`
+    );
+  }
+
   const separatorIndex = name.indexOf(':');
   if (separatorIndex <= 0 || separatorIndex === name.length - 1) {
     throw new Error(
