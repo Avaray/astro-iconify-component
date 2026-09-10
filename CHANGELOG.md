@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0-beta.4] - 2026-09-10
+
+### Added
+- Native support for Vue components via `astro-iconify-component/vue`
+- Native support for Svelte components via `astro-iconify-component/svelte`
+- `vue` and `svelte` optional peer dependencies added
+
 ## [0.1.0-beta.3] - 2026-09-10
 
 ### Added

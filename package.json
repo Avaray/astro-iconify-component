@@ -30,7 +30,9 @@
     "./react": {
       "import": "./dist/Icon.mjs",
       "types": "./dist/Icon.d.mts"
-    }
+    },
+    "./vue": "./src/Icon.vue",
+    "./svelte": "./src/Icon.svelte"
   },
   "files": [
     "dist",
@@ -53,10 +55,18 @@
   "name": "astro-iconify-component",
   "peerDependencies": {
     "astro": "^5.0.0 || ^6.0.0 || ^7.0.0",
-    "react": ">=18.0.0"
+    "react": ">=18.0.0",
+    "vue": "",
+    "svelte": ""
   },
   "peerDependenciesMeta": {
     "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    },
+    "svelte": {
       "optional": true
     }
   },
