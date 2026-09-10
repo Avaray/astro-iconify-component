@@ -2,6 +2,12 @@
 
 A simple component for [Astro](https://astro.build), giving you access to all [Iconify](https://icon-sets.iconify.design) icons.
 
+## ⚖️ Why this package? (Trade-offs)
+
+This package was built with a single goal: **to provide the absolute easiest, zero-configuration way** to use the entire Iconify catalog in Astro. It is designed to be purely plug-and-play, working by directly inlining raw `<svg>` code into your HTML.
+
+While this approach is incredibly developer-friendly and perfect for blogs, docs, or everyday websites, you should be aware of the architectural trade-off: **it does not use SVG sprites**. If you are building a page that renders the *exact same icon* hundreds of times (e.g., a massive data table with an edit icon in every row), inlining SVG will bloat your HTML size. For those specific extreme cases, the official [`astro-icon`](https://github.com/natemoo-re/astro-icon) plugin might be a better choice as it optimizes repeated icons using sprites.
+
 ## ⚙️ How it works
 
 - `<Icon />` renders **exclusively on the server side** - during `astro build` (SSG) or on every request (SSR in Node.js environments). It never goes to the browser as code.
