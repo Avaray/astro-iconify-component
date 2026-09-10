@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0-beta.3] - 2026-09-10
+
+### Added
+- New `astro-iconify-component/react` export — a React-compatible `<Icon />` component built with `React.createElement` (no JSX transform required). Designed for use inside MDX inline JSX components, React islands, and any JSX context within an Astro project
+- `icon` prop accepted as an alias for `name` in both `Icon.astro` and the React component. Allows drop-in replacement for packages that use `icon=` as the primary prop name (e.g. `@xtreat/astro-iconify`)
+- `react` added as an optional peer dependency (required only when using the `./react` export)
+
+### Fixed
+- Using `<Icon icon="..." />` (instead of `name="..."`) no longer silently fails — the `icon` prop is now a recognized alias
+
 ## [0.1.0-beta.2] - 2026-09-10
 
 ### Fixed

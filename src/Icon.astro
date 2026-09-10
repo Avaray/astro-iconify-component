@@ -28,7 +28,13 @@ export interface Props extends HTMLAttributes<'svg'> {
    * @example "famicons:home"
    * @example "game-icons:balloon-dog"
    */
-  name: string;
+  name?: string;
+
+  /**
+   * Alias for `name`. Accepted for compatibility with other icon packages
+   * that use `icon` as the prop name. If both are provided, `name` takes priority.
+   */
+  icon?: string;
 
   /**
    * CSS classes (e.g., Tailwind: `"w-6 h-6 text-blue-500"`). Passed 1:1
@@ -66,9 +72,9 @@ export interface Props extends HTMLAttributes<'svg'> {
   title?: string;
 }
 
-const { name, class: className, size, width, height, title, ...rest } = Astro.props;
+const { name, icon, class: className, size, width, height, title, ...rest } = Astro.props;
 
-const resolved = resolveIcon(name, {
+const resolved = resolveIcon(name ?? icon, {
   width: width ?? size,
   height: height ?? size,
 });

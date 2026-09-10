@@ -11,7 +11,9 @@
   "description": "Inline SVG icons for Astro. Fully typed, accessible by default, Tailwind-friendly.",
   "devDependencies": {
     "@types/node": "^26.5.1",
+    "@types/react": "^19.3.0",
     "astro": "^7.3.2",
+    "react": "^19.3.0",
     "tsdown": "^0.23.0",
     "typescript": "^7.0.2"
   },
@@ -24,6 +26,10 @@
     "./render": {
       "import": "./dist/render.mjs",
       "types": "./dist/render.d.mts"
+    },
+    "./react": {
+      "import": "./dist/Icon.mjs",
+      "types": "./dist/Icon.d.mts"
     }
   },
   "files": [
@@ -40,13 +46,19 @@
     "iconify",
     "icons",
     "svg",
-    "svg-icons", 
+    "svg-icons",
     "vector-icons"
   ],
   "license": "MIT",
   "name": "astro-iconify-component",
   "peerDependencies": {
-    "astro": "^5.0.0 || ^6.0.0 || ^7.0.0"
+    "astro": "^5.0.0 || ^6.0.0 || ^7.0.0",
+    "react": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
   },
   "repository": {
     "type": "git",
@@ -59,5 +71,5 @@
     "typecheck": "tsc --noEmit"
   },
   "type": "module",
-  "version": "0.1.0-beta.2"
+  "version": "0.1.0-beta.3"
 }
