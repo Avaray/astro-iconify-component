@@ -81,48 +81,66 @@ The component adds **no** own classes - the entire `class` you provide is passed
 
 ## 🏝️ Usage in UI Frameworks (React, Vue, Svelte) and MDX
 
-In addition to `.astro` components, this package provides native components for React, Vue, and Svelte. They are perfect for use in **MDX (`.mdx`) files** or **server-rendered (static) islands**, where you cannot directly use `.astro` components.
+In addition to `.astro` components, this package provides native components for React, Vue, and Svelte. Since all framework components rely on `node:fs` to read icon data, there is one important rule to keep in mind: **they only run on the server (Node.js)**. How you use them depends on whether your component is a static island or an interactive one.
 
-### ⚛️ React & MDX
+### Static components (no `client:*` directive)
+
+If a framework component does **not** use a `client:*` hydration directive, Astro renders it entirely on the server, just like `.astro` files. In this case you can import and use the icon directly inside your component — no extra setup needed.
+
+#### ⚛️ React & MDX
 ```tsx
 import Icon from 'astro-iconify-component/react';
 
-export default function MyBlock() {
-  return <Icon name="mdi:home" className="w-6 h-6" />;
+export default function MyCard() {
+  return (
+    <div>
+      <Icon name="mdi:home" className="w-6 h-6" />
+      Hello!
+    </div>
+  );
 }
 ```
 
-### 💚 Vue
+#### 💚 Vue
 ```vue
-<template>
-  <Icon name="mdi:home" class="w-6 h-6" />
-</template>
-
 <script setup>
 import Icon from 'astro-iconify-component/vue';
 </script>
+
+<template>
+  <div>
+    <Icon name="mdi:home" class="w-6 h-6" />
+    Hello!
+  </div>
+</template>
 ```
 
-### 🧡 Svelte
+#### 🧡 Svelte
 ```svelte
 <script>
   import Icon from 'astro-iconify-component/svelte';
 </script>
 
-<Icon name="mdi:home" class="w-6 h-6" />
+<div>
+  <Icon name="mdi:home" class="w-6 h-6" />
+  Hello!
+</div>
 ```
 
 > **Note:** The `icon` prop is also supported as an alias for `name` across all framework components for backward compatibility with other packages (e.g. `<Icon icon="mdi:home" />`).
 
-### ⚠️ Important: Interactive Client Islands (`client:load`)
+### ⚠️ Interactive islands (`client:load`, `client:visible`, etc.)
 
-The React, Vue, and Svelte components provided by this package **rely on `node:fs`** to read icons directly from the file system. Therefore, they **cannot be shipped to the browser**.
+When you add a `client:*` directive to a framework component, Astro ships its JavaScript bundle to the browser for hydration. At that point, **any `node:fs` import inside that bundle will fail** — browsers have no access to the file system.
 
-If you need an icon inside an interactive component that hydrates on the client (`client:load`, `client:visible`), you cannot import `astro-iconify-component/react` inside it (Vite will throw an error trying to bundle `node:fs` for the browser). 
+This means you **cannot** import `astro-iconify-component/react` (or `/vue`, `/svelte`) inside a component used as an interactive island. Doing so will cause Vite to throw a bundling error, and the component will not render.
 
-Instead, you have two options for interactive islands:
+Instead, use one of these two patterns:
 
-**Option 1: Pass the Astro component as a slot (Recommended for static icons)**
+**Option 1: Pass the icon as a child from the `.astro` parent (recommended)**
+
+Render the icon in Astro (on the server), and pass the resulting HTML to the island as a child node. The island receives it as already-rendered, static HTML — no `node:fs` ever reaches the browser.
+
 ```astro
 ---
 import Icon from 'astro-iconify-component';
@@ -130,12 +148,24 @@ import Card from '../islands/Card.tsx';
 ---
 
 <Card client:visible>
-  <Icon slot="icon" name="mdi:star" />
+  <Icon name="mdi:star" />
 </Card>
 ```
 
-**Option 2: Pass pre-rendered HTML (For dynamic icons)**
-If the icon needs to change state on the client (e.g., play/pause), render both variants upfront on the server side using the `render` export, and toggle the raw HTML string:
+```tsx
+// Card.tsx — receives the pre-rendered SVG via children
+export default function Card({ children }) {
+  return (
+    <div class="card">
+      {children}
+    </div>
+  );
+}
+```
+
+**Option 2: Pass pre-rendered HTML strings (for icons that toggle state)**
+
+If an icon needs to **change on the client** (e.g. play/pause), render both variants upfront on the server using the `render` export and pass them as plain string props:
 
 ```astro
 ---
