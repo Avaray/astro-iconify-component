@@ -52,9 +52,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 - Requires Astro `^5.0.0 || ^6.0.0 || ^7.0.0` as a peer dependency
 - Only works in Node.js environments (SSG and Node-based SSR). Not compatible with Edge runtimes (Cloudflare Workers, etc.)
-
-[Unreleased]: https://github.com/Avaray/astro-iconify-component/compare/v0.1.0-beta.4...HEAD
-[0.1.0-beta.4]: https://github.com/Avaray/astro-iconify-component/compare/v0.1.0-beta.3...v0.1.0-beta.4
-[0.1.0-beta.3]: https://github.com/Avaray/astro-iconify-component/compare/v0.1.0-beta.2...v0.1.0-beta.3
-[0.1.0-beta.2]: https://github.com/Avaray/astro-iconify-component/compare/v0.1.0-beta.1...v0.1.0-beta.2
-[0.1.0-beta.1]: https://github.com/Avaray/astro-iconify-component/releases/tag/v0.1.0-beta.1
